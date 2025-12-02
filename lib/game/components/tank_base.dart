@@ -39,6 +39,7 @@ abstract class TankBase extends SpriteAnimationComponent with HasGameRef<BattleC
   
   // Эффект неуязвимости
   SpriteAnimation? invincibleAnimation;
+  SpriteAnimationTicker? invincibleTicker;
   
   late RectangleHitbox hitbox;
 
@@ -72,6 +73,7 @@ abstract class TankBase extends SpriteAnimationComponent with HasGameRef<BattleC
         [sprite1, sprite2],
         stepTime: 0.1,
       );
+      invincibleTicker = invincibleAnimation?.createTicker();
     } catch (e) {
       // Игнорируем если спрайты не найдены
     }
@@ -102,11 +104,11 @@ abstract class TankBase extends SpriteAnimationComponent with HasGameRef<BattleC
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    
+
     // Эффект неуязвимости
     if (isInvincible && invincibleAnimation != null) {
-      final sprite = invincibleAnimation!.getSprite();
-      sprite.render(canvas, size: size);
+      final sprite = invincibleTicker?.getSprite();
+      sprite?.render(canvas, size: size);
     }
   }
 
@@ -131,10 +133,10 @@ abstract class TankBase extends SpriteAnimationComponent with HasGameRef<BattleC
     
     // Очищаем уничтоженные пули из списка
     activeBullets.removeWhere((b) => b.isDestroyed);
-    
+
     // Обновляем анимацию неуязвимости
     if (isInvincible && invincibleAnimation != null) {
-      invincibleAnimation!.update(dt);
+      invincibleTicker?.update(dt);
     }
   }
 
@@ -210,6 +212,7 @@ abstract class TankBase extends SpriteAnimationComponent with HasGameRef<BattleC
   void startInvincibility(double duration) {
     isInvincible = true;
     invincibleTimer = duration;
+    invincibleTicker?.reset();
   }
 
   /// Заморозка
