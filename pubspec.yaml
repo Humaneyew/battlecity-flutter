@@ -1,0 +1,36 @@
+name: battle_city
+description: Battle City clone - classic NES tank game for Flutter/Android
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flame: ^1.18.0
+  flame_audio: ^2.10.0
+  audioplayers: ^6.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/sprites/
+    - assets/sounds/
+    - assets/levels/
+    
+# Спрайты из оригинальной игры:
+# - Танки игрока: tank1.png - tank4.png, tank1-1.png - tank4-1.png
+# - Танки врагов: tank_silver, tank_aqua, tank_green, tank_main
+# - Блоки: brick.png, stone.png, water.png, bush.png, ice.png
+# - База: base1.png (целая), base2.png (разрушенная)
+# - Бонусы: bonus_*.png
+# - Эффекты: appear_*.png, invincible*.png, explosion*.png
+
