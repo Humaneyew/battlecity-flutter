@@ -363,7 +363,7 @@ class BattleCityGame extends FlameGame with HasCollisionDetection {
     
     // Спавн бонуса если у врага был предмет
     if (enemy.hasItem) {
-      _spawnBonus();
+      spawnBonus();
     }
   }
 
@@ -407,7 +407,7 @@ class BattleCityGame extends FlameGame with HasCollisionDetection {
   }
 
   /// Спавн бонуса
-  void _spawnBonus() {
+  void spawnBonus() {
     // Выбираем случайную позицию (не на базе и не рядом с игроком)
     double x, y;
     do {

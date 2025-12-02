@@ -7,6 +7,7 @@ import '../battle_city_game.dart';
 import 'tank_base.dart';
 import 'bullet.dart';
 import 'brick.dart';
+import 'player_tank.dart';
 
 /// Танк врага с оригинальными спрайтами и ИИ
 class EnemyTank extends TankBase {
@@ -24,8 +25,9 @@ class EnemyTank extends TankBase {
   
   bool _isInitializing = true;
   double _initTimer = 1.5;
-  
+
   SpriteAnimation? spawnAnimation;
+  SpriteAnimationTicker? spawnAnimationTicker;
 
   EnemyTank({
     required Vector2 position,
@@ -72,7 +74,7 @@ class EnemyTank extends TankBase {
     
     await _loadSprites();
     await _loadSpawnAnimation();
-    
+
     state = TankState.idle;
     animation = spawnAnimation;
   }
@@ -84,6 +86,7 @@ class EnemyTank extends TankBase {
         sprites.add(await gameRef.loadSprite('sprites/appear_$i.png'));
       }
       spawnAnimation = SpriteAnimation.spriteList(sprites, stepTime: 0.1);
+      spawnAnimationTicker = spawnAnimation?.createTicker();
     } catch (e) {
       print('Failed to load spawn animation: $e');
     }
@@ -126,8 +129,9 @@ class EnemyTank extends TankBase {
   @override
   void update(double dt) {
     super.update(dt);
-    
+
     if (_isInitializing) {
+      spawnAnimationTicker?.update(dt);
       _initTimer -= dt;
       
       if (_initTimer <= 0) {
@@ -152,7 +156,7 @@ class EnemyTank extends TankBase {
   @override
   void render(Canvas canvas) {
     if (_isInitializing && spawnAnimation != null) {
-      spawnAnimation!.getSprite().render(canvas, size: size);
+      spawnAnimationTicker?.getSprite().render(canvas, size: size);
       return;
     }
     
@@ -362,7 +366,7 @@ class EnemyTank extends TankBase {
     if (armour > 0) {
       armour--;
       if (hasItem) {
-        game._spawnBonus();
+        game.spawnBonus();
         hasItem = false;
       }
       return;

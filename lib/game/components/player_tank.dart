@@ -19,6 +19,7 @@ class PlayerTank extends TankBase {
   
   // Анимация появления
   SpriteAnimation? spawnAnimation;
+  SpriteAnimationTicker? spawnAnimationTicker;
   bool _showSpawnEffect = true;
 
   PlayerTank({
@@ -35,7 +36,7 @@ class PlayerTank extends TankBase {
     
     // Загружаем спрайты в зависимости от уровня танка
     await _loadSprites();
-    
+
     // Загружаем анимацию появления
     await _loadSpawnAnimation();
     
@@ -50,6 +51,7 @@ class PlayerTank extends TankBase {
         sprites.add(await gameRef.loadSprite('sprites/appear_$i.png'));
       }
       spawnAnimation = SpriteAnimation.spriteList(sprites, stepTime: 0.1);
+      spawnAnimationTicker = spawnAnimation?.createTicker();
     } catch (e) {
       print('Failed to load spawn animation: $e');
     }
@@ -110,9 +112,10 @@ class PlayerTank extends TankBase {
   @override
   void update(double dt) {
     super.update(dt);
-    
+
     // Инициализация (анимация появления)
     if (_isInitializing) {
+      spawnAnimationTicker?.update(dt);
       _initTimer -= dt;
       
       if (_initTimer <= 0) {
@@ -137,7 +140,7 @@ class PlayerTank extends TankBase {
   void render(Canvas canvas) {
     if (_isInitializing && spawnAnimation != null) {
       // Рендерим анимацию появления
-      spawnAnimation!.getSprite().render(canvas, size: size);
+      spawnAnimationTicker?.getSprite().render(canvas, size: size);
       return;
     }
     
